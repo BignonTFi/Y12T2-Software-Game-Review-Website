@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyrule Archives - Legend of Zelda Reviews</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #0a1612;
+            --secondary-bg: #152820;
+            --card-bg: #1f3830;
+            --accent-green: #4ade80;
+            --accent-gold: #fbbf24;
+            --text-primary: #ffffff;
+            --text-secondary: #9ab;
+            --text-muted: #678;
+            --border-color: #2d4a3e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Login Page Styles */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .auth-box {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 3rem;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-logo h1 {
+            font-size: 2rem;
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-logo p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .auth-tab.active {
+            color: var(--accent-green);
+            border-bottom-color: var(--accent-green);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 0.875rem;
+            background-color: var(--accent-green);
+            color: var(--primary-bg);
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .auth-button:hover {
+            background-color: #22c55e;
+            transform: translateY(-1px);
+        }
+
+        .auth-button:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background-color: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: var(--accent-green);
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .password-requirements {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .logout-button {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-button:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        /* Main Site Styles */
+        .main-site {
+            display: none;
+        }
+
+        .main-site.active {
+            display: block;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--secondary-bg);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-green);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .username-display {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-green);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem 0 1.5rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .section-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sort-dropdown {
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .sort-dropdown:hover {
+            border-color: var(--accent-green);
+        }
+
+        .sort-dropdown:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        .sort-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .view-all {
+            color: var(--accent-green);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .view-all:hover {
+            text-decoration: underline;
+        }
+
+        /* Game Grid */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .game-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-green);
+        }
+
+        .game-image {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--secondary-bg), var(--card-bg));
+        }
+
+        .game-info {
+            padding: 1rem;
+        }
+
+        .game-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .game-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .game-year {
+            color: var(--text-muted);
+        }
+
+        .game-platform {
+            background-color: var(--secondary-bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stars {
+            color: var(--accent-gold);
+        }
+
+        .rating-number {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Review Section */
+        .reviews-section {
+            margin-top: 3rem;
+        }
+
+        .review-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .reviewer-details h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .review-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .review-rating {
+            color: var(--accent-gold);
+        }
+
+        .review-game-title {
+            color: var(--accent-green);
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .review-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .review-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .like-button {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .like-button:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        /* Add Review Button */
+        .add-review-btn {
+            background-color: var(--accent-green);
+            color: var(--primary-bg);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-review-btn:hover {
+            background-color: #22c55e;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .modal-form input,
+        .modal-form textarea,
+        .modal-form select {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .modal-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .modal-form input:focus,
+        .modal-form textarea:focus,
+        .modal-form select:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .star {
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .star:hover,
+        .star.active {
+            color: var(--accent-gold);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: var(--accent-green);
+            color: var(--primary-bg);
+            border: none;
+            padding: 0.875rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #22c55e;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .game-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+
+            .stats-bar {
+                gap: 1.5rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Page -->
+    <div id="authPage" class="auth-page">
+        <div class="auth-container">
+            <div class="auth-box">
+                <div class="auth-logo">
+                    <h1>🗡️ Hyrule Archives</h1>
+                    <p>Your gateway to Zelda reviews</p>
+                </div>
+
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="authManager.switchTab('login')">Login</button>
+                    <button class="auth-tab" onclick="authManager.switchTab('signup')">Sign Up</button>
+                </div>
+
+                <div id="loginError" class="error-message"></div>
+                <div id="signupSuccess" class="success-message"></div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form active" onsubmit="authManager.handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginUsername">Username</label>
+                        <input type="text" id="loginUsername" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="auth-button">Login</button>
+                </form>
+
+                <!-- Signup Form -->
+                <form id="signupForm" class="auth-form" onsubmit="authManager.handleSignup(event)">
+                    <div class="form-group">
+                        <label for="signupUsername">Username</label>
+                        <input type="text" id="signupUsername" required minlength="3" maxlength="20" autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" required minlength="8" autocomplete="new-password">
+                        <div class="password-requirements">
+                            Must be at least 8 characters long
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPasswordConfirm">Confirm Password</label>
+                        <input type="password" id="signupPasswordConfirm" required minlength="8" autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="auth-button">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Site (Hidden until logged in) -->
+    <div id="mainSite" class="main-site">
+        <header>
+            <nav>
+                <div class="logo">🗡️ Hyrule Archives</div>
+                <ul class="nav-links">
+                    <li><a href="#">Games</a></li>
+                    <li><a href="#">Reviews</a></li>
+                    <li><a href="#">Community</a></li>
+                    <li class="user-info">
+                        <span class="username-display" id="currentUsername"></span>
+                        <button class="logout-button" onclick="authManager.logout()">Logout</button>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="container">
+            <section class="hero">
+                <h1>Welcome to Hyrule Archives</h1>
+                <p>Your comprehensive source for Legend of Zelda game reviews and ratings</p>
+            </section>
+
+            <section class="stats-bar">
+                <div class="stat">
+                    <div class="stat-number" id="totalGames">0</div>
+                    <div class="stat-label">Games Catalogued</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="totalReviews">0</div>
+                    <div class="stat-label">Total Reviews</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="avgRating">0.0</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header">
+                    <h2>Popular Games</h2>
+                    <div class="section-controls">
+                        <span class="sort-label">Sort by:</span>
+                        <select class="sort-dropdown" onchange="gameApp.sortGames(this.value)">
+                            <option value="rating">Highest Rated</option>
+                            <option value="year">Release Year</option>
+                            <option value="title">Title (A-Z)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="game-grid" id="popularGames"></div>
+            </section>
+
+            <section class="reviews-section">
+                <div class="section-header">
+                    <h2>Recent Reviews</h2>
+                    <div class="section-controls">
+                        <button class="add-review-btn" onclick="gameApp.openReviewModal()">+ Add Review</button>
+                        <span class="sort-label">Sort by:</span>
+                        <select class="sort-dropdown" onchange="gameApp.sortReviews(this.value)">
+                            <option value="date">Most Recent</option>
+                            <option value="rating">Highest Rating</option>
+                            <option value="likes">Most Liked</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="reviewsList"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Write a Review</h2>
+                <button class="close-btn" onclick="gameApp.closeReviewModal()">&times;</button>
+            </div>
+            <form class="modal-form" onsubmit="gameApp.handleSubmitReview(event)">
+                <div class="form-group">
+                    <label for="gameName">Game Title</label>
+                    <input type="text" id="gameName" required>
+                </div>
+                <div class="form-group">
+                    <label>Your Rating</label>
+                    <div class="rating-input" id="ratingInput"></div>
+                </div>
+                <div class="form-group">
+                    <label for="reviewText">Your Review</label>
+                    <textarea id="reviewText" required placeholder="Share your thoughts about the game..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Submit Review</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Authentication Manager with Secure Password Hashing
+        class AuthManager {
+            constructor() {
+                this.currentUser = null;
+                this.checkSession();
+            }
+
+            // Hash password using Web Crypto API (SHA-256)
+            async hashPassword(password) {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                return hashHex;
+            }
+
+            // Get all users from localStorage
+            getUsers() {
+                const usersData = localStorage.getItem('hyruleUsers');
+                return usersData ? JSON.parse(usersData) : {};
+            }
+
+            // Save users to localStorage
+            saveUsers(users) {
+                localStorage.setItem('hyruleUsers', JSON.stringify(users));
+            }
+
+            // Switch between login and signup tabs
+            switchTab(tab) {
+                const loginTab = document.querySelector('.auth-tab:first-child');
+                const signupTab = document.querySelector('.auth-tab:last-child');
+                const loginForm = document.getElementById('loginForm');
+                const signupForm = document.getElementById('signupForm');
+
+                if (tab === 'login') {
+                    loginTab.classList.add('active');
+                    signupTab.classList.remove('active');
+                    loginForm.classList.add('active');
+                    signupForm.classList.remove('active');
+                } else {
+                    signupTab.classList.add('active');
+                    loginTab.classList.remove('active');
+                    signupForm.classList.add('active');
+                    loginForm.classList.remove('active');
+                }
+
+                this.clearMessages();
+            }
+
+            // Show error message
+            showError(message) {
+                const errorEl = document.getElementById('loginError');
+                errorEl.textContent = message;
+                errorEl.classList.add('show');
+            }
+
+            // Show success message
+            showSuccess(message) {
+                const successEl = document.getElementById('signupSuccess');
+                successEl.textContent = message;
+                successEl.classList.add('show');
+            }
+
+            // Clear all messages
+            clearMessages() {
+                document.getElementById('loginError').classList.remove('show');
+                document.getElementById('signupSuccess').classList.remove('show');
+            }
+
+            // Handle signup
+            async handleSignup(event) {
+                event.preventDefault();
+                this.clearMessages();
+
+                const username = document.getElementById('signupUsername').value.trim();
+                const password = document.getElementById('signupPassword').value;
+                const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+
+                // Validate username
+                if (username.length < 3 || username.length > 20) {
+                    this.showError('Username must be between 3 and 20 characters');
+                    return;
+                }
+
+                // Validate password
+                if (password.length < 8) {
+                    this.showError('Password must be at least 8 characters long');
+                    return;
+                }
+
+                if (password !== passwordConfirm) {
+                    this.showError('Passwords do not match');
+                    return;
+                }
+
+                const users = this.getUsers();
+
+                // Check if username already exists
+                if (users[username]) {
+                    this.showError('Username already exists');
+                    return;
+                }
+
+                // Hash the password
+                const hashedPassword = await this.hashPassword(password);
+
+                // Create new user
+                users[username] = {
+                    username: username,
+                    passwordHash: hashedPassword,
+                    createdAt: new Date().toISOString()
+                };
+
+                this.saveUsers(users);
+
+                // Clear form
+                document.getElementById('signupForm').reset();
+
+                // Show success and switch to login
+                this.showSuccess('Account created successfully! Please login.');
+                setTimeout(() => {
+                    this.switchTab('login');
+                }, 2000);
+            }
+
+            // Handle login
+            async handleLogin(event) {
+                event.preventDefault();
+                this.clearMessages();
+
+                const username = document.getElementById('loginUsername').value.trim();
+                const password = document.getElementById('loginPassword').value;
+
+                const users = this.getUsers();
+                const user = users[username];
+
+                if (!user) {
+                    this.showError('Invalid username or password');
+                    return;
+                }
+
+                // Hash the entered password and compare
+                const hashedPassword = await this.hashPassword(password);
+
+                if (hashedPassword !== user.passwordHash) {
+                    this.showError('Invalid username or password');
+                    return;
+                }
+
+                // Login successful
+                this.currentUser = username;
+                sessionStorage.setItem('currentUser', username);
+                this.showMainSite();
+            }
+
+            // Check if user is already logged in
+            checkSession() {
+                const savedUser = sessionStorage.getItem('currentUser');
+                if (savedUser) {
+                    this.currentUser = savedUser;
+                    this.showMainSite();
+                }
+            }
+
+            // Show main site after successful login
+            showMainSite() {
+                document.getElementById('authPage').style.display = 'none';
+                document.getElementById('mainSite').classList.add('active');
+                document.getElementById('currentUsername').textContent = this.currentUser;
+                
+                // Initialize the game app after login
+                if (!window.gameApp) {
+                    window.gameApp = new GameReviewApp();
+                }
+            }
+
+            // Logout
+            logout() {
+                this.currentUser = null;
+                sessionStorage.removeItem('currentUser');
+                document.getElementById('authPage').style.display = 'block';
+                document.getElementById('mainSite').classList.remove('active');
+                document.getElementById('loginForm').reset();
+                this.clearMessages();
+            }
+        }
+
+        // Game Review Application (same as before)
+        class Game {
+            constructor(title, year, platform, rating, slug) {
+                this.title = title;
+                this.year = year;
+                this.platform = platform;
+                this.rating = rating;
+                this.slug = slug;
+            }
+
+            render() {
+                const stars = '★'.repeat(Math.floor(this.rating)) + '☆'.repeat(5 - Math.floor(this.rating));
+                return `
+                    <div class="game-card">
+                        <img src="./images/${this.slug}.png" 
+                             onerror="this.onerror=null; this.src='./images/${this.slug}.jpg';" 
+                             alt="${this.title}" class="game-image">
+                        <div class="game-info">
+                            <div class="game-title">${this.title}</div>
+                            <div class="game-details">
+                                <span class="game-year">${this.year}</span>
+                                <span class="game-platform">${this.platform}</span>
+                            </div>
+                            <div class="rating-display">
+                                <span class="stars">${stars}</span>
+                                <span class="rating-number">${this.rating.toFixed(1)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        class Review {
+            constructor(gameName, reviewer, rating, text, date = new Date()) {
+                this.id = Date.now() + Math.random();
+                this.gameName = gameName;
+                this.reviewer = reviewer;
+                this.rating = rating;
+                this.text = text;
+                this.date = date;
+                this.likes = 0;
+            }
+
+            render() {
+                const stars = '★'.repeat(this.rating) + '☆'.repeat(5 - this.rating);
+                const dateStr = this.date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                const initials = this.reviewer.split(' ').map(n => n[0]).join('').toUpperCase();
+
+                return `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">${initials}</div>
+                                <div class="reviewer-details">
+                                    <h3>${this.reviewer}</h3>
+                                    <div class="review-meta">
+                                        <span class="review-rating">${stars}</span>
+                                        <span>${dateStr}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-game-title">${this.gameName}</div>
+                        <div class="review-text">${this.text}</div>
+                        <div class="review-footer">
+                            <button class="like-button" onclick="gameApp.likeReview('${this.id}')">
+                                👍 ${this.likes} Helpful
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        class GameSorter {
+            static sort(games, sortType) {
+                const sorted = [...games];
+                switch(sortType) {
+                    case 'rating':
+                        return sorted.sort((a, b) => b.rating - a.rating);
+                    case 'year':
+                        return sorted.sort((a, b) => b.year - a.year);
+                    case 'title':
+                        return sorted.sort((a, b) => a.title.localeCompare(b.title));
+                    default:
+                        return sorted;
+                }
+            }
+        }
+
+        class ReviewSorter {
+            static sort(reviews, sortType) {
+                const sorted = [...reviews];
+                switch(sortType) {
+                    case 'date':
+                        return sorted.sort((a, b) => b.date - a.date);
+                    case 'rating':
+                        return sorted.sort((a, b) => b.rating - a.rating);
+                    case 'likes':
+                        return sorted.sort((a, b) => b.likes - a.likes);
+                    default:
+                        return sorted;
+                }
+            }
+        }
+
+        class StatsManager {
+            constructor() {
+                this.reviewCount = 0;
+                this.totalRating = 0;
+            }
+
+            addReview(rating) {
+                this.reviewCount++;
+                this.totalRating += rating;
+                this.updateStats();
+            }
+
+            getAverageRating() {
+                return this.reviewCount > 0 
+                    ? (this.totalRating / this.reviewCount).toFixed(1) 
+                    : '0.0';
+            }
+
+            updateStats() {
+                document.getElementById('totalReviews').textContent = this.reviewCount;
+                document.getElementById('avgRating').textContent = this.getAverageRating();
+            }
+        }
+
+        class GameReviewApp {
+            constructor() {
+                this.games = [];
+                this.reviews = [];
+                this.currentGameSort = 'rating';
+                this.currentReviewSort = 'date';
+                this.selectedRating = 0;
+                this.statsManager = new StatsManager();
+                
+                this.initializeData();
+                this.setupRatingInput();
+                this.renderPopularGames();
+                this.renderReviews();
+                
+                document.getElementById('totalGames').textContent = this.games.length;
+            }
+
+            initializeData() {
+                const zeldaGames = [
+                    new Game('The Legend of Zelda', 1986, 'NES', 4.5, 'the-legend-of-zelda'),
+                    new Game('Zelda II: Adventure of Link', 1987, 'NES', 3.8, 'zelda-ii-adventure-of-link'),
+                    new Game('A Link to the Past', 1991, 'SNES', 4.9, 'a-link-to-the-past'),
+                    new Game('Ocarina of Time', 1998, 'N64', 4.9, 'ocarina-of-time'),
+                    new Game('Majora\'s Mask', 2000, 'N64', 4.8, 'majoras-mask'),
+                    new Game('The Wind Waker', 2002, 'GameCube', 4.7, 'the-wind-waker'),
+                    new Game('Twilight Princess', 2006, 'Wii', 4.6, 'twilight-princess'),
+                    new Game('Skyward Sword', 2011, 'Wii', 4.3, 'skyward-sword'),
+                    new Game('Breath of the Wild', 2017, 'Switch', 4.9, 'breath-of-the-wild'),
+                    new Game('Tears of the Kingdom', 2023, 'Switch', 4.9, 'tears-of-the-kingdom'),
+                    new Game('Link\'s Awakening', 1993, 'Game Boy', 4.6, 'links-awakening'),
+                    new Game('Oracle of Seasons', 2001, 'Game Boy Color', 4.5, 'oracle-of-seasons'),
+                    new Game('Oracle of Ages', 2001, 'Game Boy Color', 4.5, 'oracle-of-ages'),
+                    new Game('The Minish Cap', 2004, 'Game Boy Advance', 4.4, 'the-minish-cap'),
+                    new Game('Phantom Hourglass', 2007, 'DS', 4.1, 'phantom-hourglass'),
+                    new Game('Spirit Tracks', 2009, 'DS', 4.2, 'spirit-tracks'),
+                    new Game('A Link Between Worlds', 2013, '3DS', 4.7, 'a-link-between-worlds'),
+                    new Game('Tri Force Heroes', 2015, '3DS', 3.9, 'tri-force-heroes'),
+                    new Game('Ocarina of Time 3D', 2011, '3DS', 4.9, 'ocarina-of-time-3d'),
+                    new Game('Majora\'s Mask 3D', 2015, '3DS', 4.8, 'majoras-mask-3d'),
+                    new Game('The Wind Waker HD', 2013, 'Wii U', 4.8, 'the-wind-waker-hd'),
+                    new Game('Twilight Princess HD', 2016, 'Wii U', 4.7, 'twilight-princess-hd'),
+                    new Game('Link\'s Awakening (2019)', 2019, 'Switch', 4.6, 'links-awakening-2019'),
+                    new Game('Skyward Sword HD', 2021, 'Switch', 4.4, 'skyward-sword-hd'),
+                    new Game('Four Swords', 2002, 'Game Boy Advance', 4.0, 'four-swords'),
+                    new Game('Four Swords Adventures', 2004, 'GameCube', 4.2, 'four-swords-adventures'),
+                    new Game('Hyrule Warriors', 2014, 'Wii U', 4.1, 'hyrule-warriors'),
+                    new Game('Hyrule Warriors: Age of Calamity', 2020, 'Switch', 4.3, 'hyrule-warriors-age-of-calamity'),
+                    new Game('Cadence of Hyrule', 2019, 'Switch', 4.4, 'cadence-of-hyrule'),
+                ];
+                this.games = zeldaGames;
+
+                const sampleReviews = [
+                    new Review(
+                        'Breath of the Wild',
+                        'HyruleHero',
+                        5,
+                        'A revolutionary entry that redefined what a Zelda game could be. The open-world exploration is unparalleled, and the freedom to tackle challenges in any order brings a fresh perspective to the series. Climbing mountains and gliding through the skies of Hyrule never gets old.',
+                        new Date('2024-01-15')
+                    ),
+                    new Review(
+                        'Ocarina of Time',
+                        'TempleGuardian',
+                        5,
+                        'The game that set the standard for 3D action-adventure games. Z-targeting, the Hookshot, and playing the Ocarina are all iconic mechanics. The transition from child to adult Link was masterfully done, and the Water Temple will haunt my dreams forever.',
+                        new Date('2024-01-20')
+                    ),
+                    new Review(
+                        'A Link to the Past',
+                        'RetroGamer91',
+                        5,
+                        'The definitive 2D Zelda experience. The Dark World mechanic was genius, and the dungeons are some of the best designed in the series. This game proved that the SNES could deliver epic adventures that rivaled anything on more powerful systems.',
+                        new Date('2024-01-18')
+                    ),
+                    new Review(
+                        'Tears of the Kingdom',
+                        'SkywardExplorer',
+                        5,
+                        'Nintendo somehow took Breath of the Wild and made it even better. The building mechanics with Ultrahand are incredibly creative, and exploring the Sky Islands and Depths adds so much depth. Link\'s new abilities make traversal even more fun than before.',
+                        new Date('2024-01-25')
+                    ),
+                    new Review(
+                        'Majora\'s Mask',
+                        'MoonWatcher',
+                        5,
+                        'Dark, atmospheric, and emotionally resonant. The three-day cycle creates a constant sense of urgency, and the side quests are the most meaningful in the series. Watching the moon slowly descend is genuinely unsettling. A masterpiece of environmental storytelling.',
+                        new Date('2024-01-22')
+                    )
+                ];
+                
+                sampleReviews[0].likes = 42;
+                sampleReviews[1].likes = 87;
+                sampleReviews[2].likes = 56;
+                sampleReviews[3].likes = 39;
+                sampleReviews[4].likes = 64;
+                
+                this.reviews = sampleReviews;
+                
+                sampleReviews.forEach(review => {
+                    this.statsManager.addReview(review.rating);
+                });
+            }
+
+            renderPopularGames() {
+                const container = document.getElementById('popularGames');
+                const sortedGames = GameSorter.sort(this.games, this.currentGameSort);
+                container.innerHTML = sortedGames.map(game => game.render()).join('');
+            }
+
+            renderReviews() {
+                const container = document.getElementById('reviewsList');
+                const sortedReviews = ReviewSorter.sort(this.reviews, this.currentReviewSort);
+                container.innerHTML = sortedReviews.map(review => review.render()).join('');
+            }
+
+            setupRatingInput() {
+                const container = document.getElementById('ratingInput');
+                container.innerHTML = Array.from({length: 5}, (_, i) => 
+                    `<span class="star" data-rating="${i + 1}" onclick="gameApp.setRating(${i + 1})">☆</span>`
+                ).join('');
+            }
+
+            sortGames(sortType) {
+                this.currentGameSort = sortType;
+                this.renderPopularGames();
+            }
+
+            sortReviews(sortType) {
+                this.currentReviewSort = sortType;
+                this.renderReviews();
+            }
+
+            setRating(rating) {
+                this.selectedRating = rating;
+                const stars = document.querySelectorAll('#ratingInput .star');
+                stars.forEach((star, index) => {
+                    star.classList.toggle('active', index < rating);
+                    star.textContent = index < rating ? '★' : '☆';
+                });
+            }
+
+            openReviewModal() {
+                document.getElementById('reviewModal').classList.add('active');
+            }
+
+            closeReviewModal() {
+                document.getElementById('reviewModal').classList.remove('active');
+                this.resetForm();
+            }
+
+            resetForm() {
+                document.getElementById('gameName').value = '';
+                document.getElementById('reviewText').value = '';
+                this.setRating(0);
+            }
+
+            handleSubmitReview(event) {
+                event.preventDefault();
+                
+                const gameName = document.getElementById('gameName').value;
+                const reviewText = document.getElementById('reviewText').value;
+                
+                if (this.selectedRating === 0) {
+                    alert('Please select a rating!');
+                    return;
+                }
+
+                const newReview = new Review(
+                    gameName,
+                    authManager.currentUser,
+                    this.selectedRating,
+                    reviewText
+                );
+
+                this.reviews.unshift(newReview);
+                this.statsManager.addReview(this.selectedRating);
+                this.renderReviews();
+                this.closeReviewModal();
+            }
+
+            likeReview(reviewId) {
+                const review = this.reviews.find(r => r.id.toString() === reviewId);
+                if (review) {
+                    review.likes++;
+                    this.renderReviews();
+                }
+            }
+        }
+
+        // Initialize authentication manager
+        const authManager = new AuthManager();
+    </script>
+</body>
+</html>
